@@ -1,10 +1,6 @@
 const Book = require('../model/book.model');
 
-exports.test = function (req, res) {
-    res.send('Greetings from the Test controller!');
-};
-
-exports.book_create = function (req, res) {
+exports.book_create = (req, res) => {
     let book = new Book(
         {
             title: req.body.title,
@@ -16,31 +12,53 @@ exports.book_create = function (req, res) {
         }
     );
 
-    book.save(function (err) {
+    book.save((err) => {
         if (err) {
             return next(err);
         }
-        res.send('Book Created successfully')
+        res.send({
+            message: "Book Created",
+            book_created: {
+                title: book.title,
+                author: book.author,
+                publisher: book.publisher,
+                description: book.description,
+                page_count: book.page_count,
+                price: book.price
+            }
+        })
     })
 };
 
-exports.book_details = function (req, res) {
-    Book.findById(req.params.id, function (err, book) {
+exports.book_details = (req, res) => {
+    Book.findById(req.params.id, (err, book) => {
         if (err) return next(err);
         res.send(book);
     })
 };
 
-exports.book_update = function (req, res) {
-    Book.findByIdAndUpdate(req.params.id, {$set: req.body}, function (err, book) {
+exports.book_update = (req, res) => {
+    Book.findByIdAndUpdate(req.params.id, {$set: req.body}, (err, book) => {
         if (err) return next(err);
-        res.send('Book udpated.');
+        res.send({
+            message: "Book Updated",
+            book_updated: {
+                title: book.title,
+                author: book.author,
+                publisher: book.publisher,
+                description: book.description,
+                page_count: book.page_count,
+                price: book.price
+            }
+        });
     });
 };
 
-exports.book_delete = function (req, res) {
-    Book.findByIdAndRemove(req.params.id, function (err) {
+exports.book_delete = (req, res) => {
+    Book.findByIdAndRemove(req.params.id, (err) => {
         if (err) return next(err);
-        res.send('Deleted successfully!');
+        res.send({
+            message: "Book Deleted",
+        });
     })
 };
